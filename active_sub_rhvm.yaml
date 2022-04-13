@@ -1,11 +1,11 @@
 ---
 - name: Active subscription
-  hosts: all
+  hosts: rhv-manager
   become: true
-  gather_facts: True
+  gather_facts: true
   vars:
-    subscription_username: "username"
-    subscription_password: "password"
+    subscription_username: "ducnguyensv"
+    subscription_password: "DucNguyen@123"
   tasks:
     - name: Register with subscription-manager
       community.general.redhat_subscription:
@@ -13,26 +13,19 @@
         username: "{{ subscription_username }}"
         password: "{{ subscription_password }}"
         auto_attach: true
-    - name: Disable all repositories except rhel-8-for-x86_64-baseos-rpms, rhel-8-for-x86_64-appstream-rpms, rhv-4.4-manager-for-rhel-8-x86_64-rpms, fast-datapath-for-rhel-8-x86_64-rpms, jb-eap-7.4-for-rhel-8-x86_64-rpms, openstack-16.2-cinderlib-for-rhel-8-x86_64-rpms, rhceph-4-tools-for-rhel-8-x86_64-rpms
+    - name: Disable all repositories
       community.general.rhsm_repository:
-        name: '{{ item }}'
-        purge: True
-        with_items:
-          - rhel-8-for-x86_64-baseos-rpms
-          - rhel-8-for-x86_64-appstream-rpms
-          - rhv-4.4-manager-for-rhel-8-x86_64-rpms
-          - fast-datapath-for-rhel-8-x86_64-rpms
-          - jb-eap-7.4-for-rhel-8-x86_64-rpms
-          - openstack-16.2-cinderlib-for-rhel-8-x86_64-rpms
-          - rhceph-4-tools-for-rhel-8-x86_64-rpms
+        name: '*'
+        state: disabled
+    - name: Enable requirement repos
+      command:
+        subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms --enable=rhel-8-for-x86_64-appstream-rpms --enable=rhv-4.4-manager-for-rhel-8-x86_64-rpms --enable=fast-datapath-for-rhel-8-x86_64-rpms --enable=jb-eap-7.4-for-rhel-8-x86_64-rpms --enable=openstack-16.2-cinderlib-for-rhel-8-x86_64-rpms --enable=rhceph-4-tools-for-rhel-8-x86_64-rpms
     - name: Enable the pki-deps module
-      dnf:
-        name: '{{ item }}'
-        state: present
-        with_items:
-          - pki-deps
-          - postgresql:12
+      command:
+        dnf module -y enable pki-deps
+    - name: Enable postgresql:12
+      command:
+        dnf module -y enable postgresql:12
     - name: Synchronize installed packages to update them to the latest available versions
-      command: dnf distro-sync --nobest
-
-
+      command: 
+        dnf distro-sync --nobest -y
