@@ -1,6 +1,6 @@
 ---
 - name: Generate Hosts File
-  hosts: all
+  hosts: rhv
   become: true
   gather_facts: true
   vars:
