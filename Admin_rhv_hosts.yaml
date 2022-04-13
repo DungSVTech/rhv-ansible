@@ -1,0 +1,111 @@
+---
+- name: Admin RHV Hosts
+  hosts: rhv
+  become: true
+  gather_facts: false
+
+  vars_files:
+    - files/rhv_vars.yaml
+    - files/password.yaml
+  
+  pre_tasks:
+    - name: Login to RHV
+      redhat.rhv.ovirt_auth:
+        hostname: "{{ engine_fqdn }}"
+        username: "{{ engine_user }}"
+        password: "{{ engine_password }}"
+        ca_file: "{{ engine_cafile | default(omit) }}"
+        insecure: "{{ engine_insecure | default{true} }}"
+      tags:
+        - always
+  tasks:
+    # Note that override_iptables is false by default in oVirt/RHV:
+    - ovirt.ovirt.ovirt_host:
+        cluster: Default
+        name: myhost
+        address: 10.34.61.145
+        password: secret
+        override_iptables: true
+        kernel_params:
+        - intel_iommu=on
+
+    # Add host using public key
+    - ovirt.ovirt.ovirt_host:
+        public_key: true
+        cluster: Default
+        name: myhost2
+        address: 10.34.61.145
+        override_iptables: true
+
+    # Deploy hosted engine host
+    - ovirt.ovirt.ovirt_host:
+        cluster: Default
+        name: myhost2
+        password: secret
+        address: 10.34.61.145
+        override_iptables: true
+        hosted_engine: deploy
+
+    # Maintenance
+    - ovirt.ovirt.ovirt_host:
+        state: maintenance
+        name: myhost
+
+    # Restart host using power management:
+    - ovirt.ovirt.ovirt_host:
+        state: restarted
+        name: myhost
+
+    # Upgrade host
+    - ovirt.ovirt.ovirt_host:
+        state: upgraded
+        name: myhost
+
+    # discover iscsi targets
+    - ovirt.ovirt.ovirt_host:
+        state: iscsidiscover
+        name: myhost
+        iscsi:
+        username: iscsi_user
+        password: secret
+        address: 10.34.61.145
+        port: 3260
+
+
+    # login to iscsi targets
+    - ovirt.ovirt.ovirt_host:
+        state: iscsilogin
+        name: myhost
+        iscsi:
+        username: iscsi_user
+        password: secret
+        address: 10.34.61.145
+        target: "iqn.2015-07.com.mlipchuk2.redhat:444"
+        port: 3260
+
+
+    # Reinstall host using public key
+    - ovirt.ovirt.ovirt_host:
+        state: reinstalled
+        name: myhost
+        public_key: true
+
+    # Remove host
+    - ovirt.ovirt.ovirt_host:
+        state: absent
+        name: myhost
+        force: True
+
+    # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
+    - ovirt.ovirt.ovirt_host:
+        state: absent
+        name: myhost
+        register: result
+        until: not result.failed
+        retries: 6
+        delay: 20
+
+    # Change host Name
+    - ovirt.ovirt.ovirt_host:
+        id: 00000000-0000-0000-0000-000000000000
+        name: "new host name"

@@ -1,0 +1,22 @@
+---
+- name: Install NTP
+  hosts: all
+  become: True
+  gather_facts: True
+  tasks:
+    - name: Install chronyd
+      yum:
+        name: chrony
+        state: latest
+        update_cache: yes
+    - name: Copy configuration file
+      template:
+        src: ./files/chrony.conf
+        dest: /etc/chrony.conf
+        owner: root
+        group: root
+        mode: 0644
+    - name: Restart chronyd
+      service:
+        name: chronyd
+        state: restarted

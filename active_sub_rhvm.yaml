@@ -1,0 +1,38 @@
+---
+- name: Active subscription
+  hosts: all
+  become: true
+  gather_facts: True
+  vars:
+    subscription_username: "username"
+    subscription_password: "password"
+  tasks:
+    - name: Register with subscription-manager
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ subscription_username }}"
+        password: "{{ subscription_password }}"
+        auto_attach: true
+    - name: Disable all repositories except rhel-8-for-x86_64-baseos-rpms, rhel-8-for-x86_64-appstream-rpms, rhv-4.4-manager-for-rhel-8-x86_64-rpms, fast-datapath-for-rhel-8-x86_64-rpms, jb-eap-7.4-for-rhel-8-x86_64-rpms, openstack-16.2-cinderlib-for-rhel-8-x86_64-rpms, rhceph-4-tools-for-rhel-8-x86_64-rpms
+      community.general.rhsm_repository:
+        name: '{{ item }}'
+        purge: True
+        with_items:
+          - rhel-8-for-x86_64-baseos-rpms
+          - rhel-8-for-x86_64-appstream-rpms
+          - rhv-4.4-manager-for-rhel-8-x86_64-rpms
+          - fast-datapath-for-rhel-8-x86_64-rpms
+          - jb-eap-7.4-for-rhel-8-x86_64-rpms
+          - openstack-16.2-cinderlib-for-rhel-8-x86_64-rpms
+          - rhceph-4-tools-for-rhel-8-x86_64-rpms
+    - name: Enable the pki-deps module
+      dnf:
+        name: '{{ item }}'
+        state: present
+        with_items:
+          - pki-deps
+          - postgresql:12
+    - name: Synchronize installed packages to update them to the latest available versions
+      command: dnf distro-sync --nobest
+
+

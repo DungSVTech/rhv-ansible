@@ -1,0 +1,19 @@
+---
+- name: Active subscription
+  hosts: all
+  become: true
+  gather_facts: True
+  vars:
+    subscription_username: "username"
+    subscription_password: "password"
+  tasks:
+    - name: Register with subscription-manager
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ subscription_username }}"
+        password: "{{ subscription_password }}"
+        auto_attach: true
+    - name: Enable the Red Hat Virtualization Host 8 repository to allow later updates to the Red Hat Virtualization Host
+      community.general.rhsm_repository:
+        name: rhvh-4-for-rhel-8-x86_64-rpms
+        
