@@ -1,0 +1,16 @@
+---
+- name: Get MAC add of RHV hosts
+  become: true
+  gather_facts: true
+  hosts: rhv
+  vars:
+    my_file: /home/dxd/Documents
+    my_template: files/get_macs.j2
+  tasks:
+    - name: Create "{{ my_file }}"
+      template:
+        src: "{{ my_template }}"
+        dest: "{{ my_file }}"
+        owner: root
+        group: root
+        mode: "0644"
