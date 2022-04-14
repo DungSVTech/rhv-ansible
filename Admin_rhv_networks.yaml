@@ -10,7 +10,7 @@
   
   pre_tasks:
     - name: Login to RHV
-      redhat.rhv.ovirt_auth:
+      ovirt.ovirt.ovirt_auth:
         hostname: "{{ engine_fqdn }}"
         username: "{{ engine_user }}"
         password: "{{ engine_password }}"
