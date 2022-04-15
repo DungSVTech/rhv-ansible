@@ -1,11 +1,11 @@
 ---
 - name: Active subscription
-  hosts: all
+  hosts: rhv-hosts
   become: true
   gather_facts: True
   vars:
-    subscription_username: "username"
-    subscription_password: "password"
+    subscription_username: "ducnguyensv"
+    subscription_password: "DucNguyen@123"
   tasks:
     - name: Register with subscription-manager
       community.general.redhat_subscription:
