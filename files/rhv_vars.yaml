@@ -1,4 +1,4 @@
 ---
-engine_fqdn: rhvm.example.com
+engine_fqdn: ansible-rhv-manager.example.com
 engine_user: admin@internal
 engine_cafile: /etc/pki/ovirt-engine/ca.pem
