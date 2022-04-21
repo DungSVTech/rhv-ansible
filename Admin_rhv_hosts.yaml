@@ -9,7 +9,7 @@
       ovirt.ovirt.ovirt_auth:
         url: https://ansible-rhv-manager.example.com/ovirt-engine/api
         username: admin@internal
-        ca_file: ca.pem
+        ca_file: /etc/pki/ovirt-engine/ca.pem
         password: 'Dung123456@'
   tasks:
     # Note that override_iptables is false by default in oVirt/RHV:
