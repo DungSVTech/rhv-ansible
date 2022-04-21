@@ -4,24 +4,14 @@
   become: true
   gather_facts: true
   
-  pre_tasks:
-  block:
-    - ansible.builtin.include_vars: files/password.yaml
+  pre-tasks:
     - name: Login to RHV
       ovirt.ovirt.ovirt_auth:
         url: https://ansible-rhv-manager.example.com/ovirt-engine/api
         username: admin@internal
-        password: "{{ engine_password }}"
         ca_file: ca.pem
+        password: 'Dung123456@'
   always:
-      - name: Always revoke the SSO token
-        ovirt.ovirt.ovirt_auth:
-          state: absent
-          ovirt_auth: "{{ ovirt_auth }}"
-      - name: Obtain SSO token
-        ovirt_auth:
-          state: present
-  
   tasks:
     # Note that override_iptables is false by default in oVirt/RHV:
     - ovirt.ovirt.ovirt_host:
