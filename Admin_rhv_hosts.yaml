@@ -4,7 +4,7 @@
   become: true
   gather_facts: true
   
-  pre-tasks:
+  pre_tasks:
     - name: Login to RHV
       ovirt.ovirt.ovirt_auth:
         url: https://ansible-rhv-manager.example.com/ovirt-engine/api
