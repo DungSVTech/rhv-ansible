@@ -11,7 +11,6 @@
         username: admin@internal
         ca_file: ca.pem
         password: 'Dung123456@'
-  always:
   tasks:
     # Note that override_iptables is false by default in oVirt/RHV:
     - ovirt.ovirt.ovirt_host:
