@@ -15,14 +15,14 @@
         - always
 #   tasks:
 #     # Note that override_iptables is false by default in oVirt/RHV:
-#     - ovirt.ovirt.ovirt_host:
-#         cluster: Default
-#         name: ansible-compute-1.example.com
-#         address: 10.1.16.41
-#         password: Dung123456@
-#         override_iptables: true
-#         kernel_params:
-#         - intel_iommu=on
+    - ovirt.ovirt.ovirt_host:
+        cluster: Default
+        name: ansible-compute-1.example.com
+        address: 10.1.16.41
+        password: Dung123456@
+        override_iptables: true
+        kernel_params:
+        - intel_iommu=on
 
     # # Add host using public key
     # - ovirt.ovirt.ovirt_host:
@@ -33,37 +33,37 @@
     #     override_iptables: true
 
     # Deploy hosted engine host
-    # - ovirt.ovirt.ovirt_host:
-    #     cluster: Default
-    #     name: ansible-compute-1.example.com
-    #     password: Dung123456@
-    #     address: 10.1.16.41
-    #     override_iptables: true
-    #     hosted_engine: deploy
+    - ovirt.ovirt.ovirt_host:
+        cluster: Default
+        name: ansible-compute-1.example.com
+        password: Dung123456@
+        address: 10.1.16.41
+        override_iptables: true
+        hosted_engine: deploy
 
     # Maintenance
-    # - ovirt.ovirt.ovirt_host:
-    #     state: maintenance
-    #     name: myhost
+    - ovirt.ovirt.ovirt_host:
+        state: maintenance
+        name: ansible-compute-1.example.com
 
     # Restart host using power management:
-    # - ovirt.ovirt.ovirt_host:
-    #     state: restarted
-    #     name: myhost
+    - ovirt.ovirt.ovirt_host:
+        state: restarted
+        name: ansible-compute-1.example.com
 
     # Upgrade host
-    # - ovirt.ovirt.ovirt_host:
-    #     state: upgraded
-    #     name: myhost
+    - ovirt.ovirt.ovirt_host:
+        state: upgraded
+        name: ansible-compute-1.example.com
 
     # Add storage domain
-    # - ovirt.ovirt.ovirt_storage_domain:
-    #     name: ansible-nfs-server
-    #     host: ansible-compute-1.example.com
-    #     data_center: Default
-    #     nfs:
-    #         address: 10.1.16.43
-    #         path: /data/mydata
+    - ovirt.ovirt.ovirt_storage_domain:
+        name: ansible-nfs-server
+        host: ansible-compute-1.example.com
+        data_center: Default
+        nfs:
+            address: 10.1.16.43
+            path: /data/mydata
     # discover iscsi targets
     # - ovirt.ovirt.ovirt_host:
     #     state: iscsidiscover
@@ -100,13 +100,13 @@
     #     force: True
 
     # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
-    # - ovirt.ovirt.ovirt_host:
-    #     state: absent
-    #     name: ansible-compute-1.example.com
-    #     register: result
-    #     until: not result.failed
-    #     retries: 6
-    #     delay: 20
+    - ovirt.ovirt.ovirt_host:
+        state: absent
+        name: ansible-compute-1.example.com
+        register: result
+        until: not result.failed
+        retries: 6
+        delay: 20
 
     # # Change host Name
     # - ovirt.ovirt.ovirt_host:
