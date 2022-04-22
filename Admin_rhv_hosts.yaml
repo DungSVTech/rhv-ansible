@@ -13,8 +13,8 @@
         password: 'Dung123456@'
       tags:
         - always
-#   tasks:
-#     # Note that override_iptables is false by default in oVirt/RHV:
+  tasks:
+    # Note that override_iptables is false by default in oVirt/RHV:
     - ovirt.ovirt.ovirt_host:
         cluster: Default
         name: ansible-compute-1.example.com
