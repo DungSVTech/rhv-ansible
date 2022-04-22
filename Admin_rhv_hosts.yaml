@@ -16,8 +16,12 @@
   tasks:
     # Note that override_iptables is false by default in oVirt/RHV:
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         cluster: Default
         name: ansible-compute-1.example.com
         address: 10.1.16.41
@@ -36,8 +40,12 @@
 
     # Deploy hosted engine host
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         cluster: Default
         name: ansible-compute-1.example.com
         password: Dung123456@
@@ -47,29 +55,45 @@
 
     # Maintenance
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         state: maintenance
         name: ansible-compute-1.example.com
 
     # Restart host using power management:
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         state: restarted
         name: ansible-compute-1.example.com
 
     # Upgrade host
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         state: upgraded
         name: ansible-compute-1.example.com
 
     # Add storage domain
     - ovirt.ovirt.ovirt_storage_domain:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         name: ansible-nfs-server
         host: ansible-compute-1.example.com
         data_center: Default
@@ -113,8 +137,12 @@
 
     # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
     - ovirt.ovirt.ovirt_host:
-        ovirt_auth:
-            state: present
+        auth:
+            ca_file: /etc/pki/ovirt-engine/ca.pem
+            insecure: yes
+            url: https://ansible-rhv-manager.example.com/ovirt-engine/api
+            username: admin@internal
+            password: 'Dung123456@'
         state: absent
         name: ansible-compute-1.example.com
         register: result
