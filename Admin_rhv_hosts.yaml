@@ -11,14 +11,8 @@
         username: admin@internal
         ca_file: /etc/pki/ovirt-engine/ca.pem
         password: 'Dung123456@'
-  always:
-    - name: Always revoke the SSO token
-      ovirt.ovirt.ovirt_auth:
-        state: absent
-        ovirt_auth: "{{ ovirt_auth }}"
-    - name: Obtain SSO token
-      ovirt_auth:
-        state: present
+      tags:
+        - always
 #   tasks:
 #     # Note that override_iptables is false by default in oVirt/RHV:
 #     - ovirt.ovirt.ovirt_host:
