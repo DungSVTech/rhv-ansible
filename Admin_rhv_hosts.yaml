@@ -21,15 +21,6 @@
         override_iptables: true
         kernel_params:
         - intel_iommu=on
-
-    # # Add host using public key
-    # - ovirt.ovirt.ovirt_host:
-    #     public_key: true
-    #     cluster: Default
-    #     name: myhost2
-    #     address: 10.34.61.145
-    #     override_iptables: true
-
     # Deploy hosted engine host
     - ovirt.ovirt.ovirt_host:
         cluster: Default
@@ -62,41 +53,6 @@
         nfs:
             address: 10.1.16.43
             path: /data/mydata
-    # discover iscsi targets
-    # - ovirt.ovirt.ovirt_host:
-    #     state: iscsidiscover
-    #     name: myhost
-    #     iscsi:
-    #     username: iscsi_user
-    #     password: secret
-    #     address: 10.34.61.145
-    #     port: 3260
-
-
-    # # login to iscsi targets
-    # - ovirt.ovirt.ovirt_host:
-    #     state: iscsilogin
-    #     name: myhost
-    #     iscsi:
-    #     username: iscsi_user
-    #     password: secret
-    #     address: 10.34.61.145
-    #     target: "iqn.2015-07.com.mlipchuk2.redhat:444"
-    #     port: 3260
-
-
-    # # Reinstall host using public key
-    # - ovirt.ovirt.ovirt_host:
-    #     state: reinstalled
-    #     name: myhost
-    #     public_key: true
-
-    # # Remove host
-    # - ovirt.ovirt.ovirt_host:
-    #     state: absent
-    #     name: myhost
-    #     force: True
-
     # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
     - ovirt.ovirt.ovirt_host:
         state: absent
@@ -105,12 +61,8 @@
         until: not result.failed
         retries: 6
         delay: 20
-  always:
+    always:
     - name: Always revoke the SSO token
       ovirt_auth:
         state: absent
         ovirt_auth: "{{ ovirt_auth }}"
-    # # Change host Name
-    # - ovirt.ovirt.ovirt_host:
-    #     id: 00000000-0000-0000-0000-000000000000
-    #     name: "new host name"
