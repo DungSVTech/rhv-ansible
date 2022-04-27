@@ -21,7 +21,7 @@
         password: Dung123456@
         override_iptables: true
         kernel_params:
-        - intel_iommu=on
+            - intel_iommu=on
     # Deploy hosted engine host
     - ovirt.ovirt.ovirt_host:
         auth: "{{ ovirt_auth }}"
