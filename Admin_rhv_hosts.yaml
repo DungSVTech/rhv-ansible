@@ -14,6 +14,7 @@
         ca_file: /etc/pki/ovirt-engine/ca.pem
     # Note that override_iptables is false by default in oVirt/RHV:
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         cluster: Default
         name: ansible-compute-1.example.com
         address: 10.1.16.41
@@ -23,6 +24,7 @@
         - intel_iommu=on
     # Deploy hosted engine host
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         cluster: Default
         name: ansible-compute-1.example.com
         password: Dung123456@
@@ -32,21 +34,25 @@
 
     # Maintenance
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         state: maintenance
         name: ansible-compute-1.example.com
 
     # Restart host using power management:
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         state: restarted
         name: ansible-compute-1.example.com
 
     # Upgrade host
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         state: upgraded
         name: ansible-compute-1.example.com
 
     # Add storage domain
     - ovirt.ovirt.ovirt_storage_domain:
+        auth: "{{ ovirt_auth }}"
         name: ansible-nfs-server
         host: ansible-compute-1.example.com
         data_center: Default
@@ -55,6 +61,7 @@
             path: /data/mydata
     # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
     - ovirt.ovirt.ovirt_host:
+        auth: "{{ ovirt_auth }}"
         state: absent
         name: ansible-compute-1.example.com
         register: result
