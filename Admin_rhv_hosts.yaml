@@ -1,75 +1,89 @@
 ---
-- name: Admin RHV Hosts
-  hosts: rhv-manager
-  become: true
+- name: oVirt infra
+  hosts: localhost
+  connection: local
   gather_facts: true
-  
-  tasks:
-  - block:
-    - name: Obtain SSO  token
+
+  vars:
+     engine_fqdn: ansible-rhv-manager.example.com
+     engine_user: admin@internal
+     engine_password: Dung123456@
+     engine_cafile: /etc/pki/ovirt-engine/ca.pem
+     data_center_name: Default
+     compatibility_version: 4.4
+
+    #  clusters:
+    #   - name: production
+    #     cpu_type: Intel Conroe Family
+    #     profile: production
+
+     hosts:
+      - name: ansible-compute-1.example.com
+        address: 10.1.16.41
+        cluster: Default
+        password: Dung123456@
+
+     storages:
+       mynfsstorage:
+         master: true
+         state: present
+         nfs:
+           address: 10.1.16.43
+           path: /data/mydata
+
+    #    mytemplates:
+    #      domain_function: export
+    #      nfs:
+    #        address: 100.101.102.104
+    #        path: /exports/nfs/exported
+    #    myisostorage:
+    #      domain_function: iso
+    #      nfs:
+    #        address: 100.101.102.105
+    #        path: /exports/nfs/iso
+
+    #  logical_networks:
+    #    - name: mynetwork
+    #      clusters:
+    #        - name: production
+    #          assigned: yes
+    #          required: no
+    #          display: no
+    #          migration: yes
+    #          gluster: no
+
+    #  host_networks:
+    #    - name: myhost1
+    #      check: true
+    #      save: true
+    #      bond:
+    #        name: bond0
+    #        mode: 2
+    #        interfaces:
+    #          - eth2
+    #          - eth3
+    #      networks:
+    #        - name: mynetwork
+    #          boot_protocol: dhcp
+
+  pre_tasks:
+    - name: Login to oVirt
       ovirt_auth:
-        url: https://ansible-rhv-manager.example.com/ovirt-engine/api
-        username: admin@internal
-        password: Dung123456@
-        ca_file: /etc/pki/ovirt-engine/ca.pem
-    # Note that override_iptables is false by default in oVirt/RHV:
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        cluster: Default
-        name: ansible-compute-1.example.com
-        address: 10.1.16.41
-        password: Dung123456@
-        override_iptables: true
-        kernel_params:
-            - intel_iommu=on
-    # Deploy hosted engine host
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        cluster: Default
-        name: ansible-compute-1.example.com
-        password: Dung123456@
-        address: 10.1.16.41
-        override_iptables: true
-        hosted_engine: deploy
+        hostname: "{{ engine_fqdn }}"
+        username: "{{ engine_user }}"
+        password: "{{ engine_password }}"
+        ca_file: "{{ engine_cafile | default(omit) }}"
+        insecure: "{{ engine_insecure | default(true) }}"
+      tags:
+        - always
 
-    # Maintenance
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        state: maintenance
-        name: ansible-compute-1.example.com
+  roles:
+    - redhat.rhv.infra
 
-    # Restart host using power management:
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        state: restarted
-        name: ansible-compute-1.example.com
-
-    # Upgrade host
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        state: upgraded
-        name: ansible-compute-1.example.com
-
-    # Add storage domain
-    - ovirt.ovirt.ovirt_storage_domain:
-        auth: "{{ ovirt_auth }}"
-        name: ansible-nfs-server
-        host: ansible-compute-1.example.com
-        data_center: Default
-        nfs:
-            address: 10.1.16.43
-            path: /data/mydata
-    # Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)
-    - ovirt.ovirt.ovirt_host:
-        auth: "{{ ovirt_auth }}"
-        state: absent
-        name: ansible-compute-1.example.com
-        register: result
-        until: not result.failed
-        retries: 6
-        delay: 20
-    always:
-    - name: Always revoke the SSO token
+  post_tasks:
+    - name: Logout from oVirt
       ovirt_auth:
         state: absent
         ovirt_auth: "{{ ovirt_auth }}"
+      tags:
+        - always
